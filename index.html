@@ -1,22 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script
-  src="https://code.jquery.com/jquery-3.3.1.js"
-  integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
-  crossorigin="anonymous"></script>
-
+	<!-- Bootstrap 4 -->
+	<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device.width initial-scale=1.0">
     <title>Title</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+	<form id="map">
+		<fieldset class="form-group">
+			<legend>Map settings</legend>
+			<label for="width">Map width</label>
+			<input type="number" class="form-control" id="width" min=5 value=10>
+			<label for="height">Map height</label>
+			<input type="number" class="form-control" id="height" min=5 value=10>
+			<label for="cell-size">Cell size</label>
+			<input type="number" class="form-control" id="cell-size" min=10 max = 100 value=20>
+			<label for="delay">Turn delay in ms</label>
+			<input type="number" class="form-control" id="delay" min=50 max = 10000 value=100>
+			<label for="creatures-count">Creatures count</label>
+			<input type="number" class="form-control" id="creatures-count" min=1 max = 10 value=3>
+			<label for="food-spawn-per-turn">Food spawn per turn</label>
+			<input type="number" class="form-control" id="food-spawn-per-turn" min=0 max = 10 value=1>
+		</fieldset>
+			
+		<button class="btn btn-primary" onclick="createMap(); return false;">Start simulation</button>
+	</form>
 
-<pre id="game"></pre>
+	<canvas></canvas>
 
+<script>
+	function arrayDeleteElement(array, index){
+		return array.slice(0, index).concat(array.slice(index + 1));
+	}
+</script>
 <script src="Position.js"></script>
 <script src="Creature.js"></script>
+<script src="Food.js"></script>
 <script src="Game.js"></script>
 <script src="script.js"></script>
 
