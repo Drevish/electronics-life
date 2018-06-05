@@ -4,23 +4,13 @@ var width;
 var height;
 var cell_size;
 var delay;
-var creatures_count;
+var herbivores_count;
+var predators_count;
 var food_spawn_per_turn;
 
 var gameOutput = document.getElementsByTagName("canvas")[0];
 
-var map = [];/*
-    ["#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#"],
-    ["#", " ", " ", "#", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#"],
-    ["#", " ", " ", " ", "0", " ", "#", " ", "#", " ", " ", " ", "#", " ", " ", " ", "#", " ", "#"],
-    ["#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#"],
-    ["#", " ", " ", " ", " ", "#", "#", " ", " ", " ", "#", " ", " ", " ", " ", "#", " ", " ", "#"],
-    ["#", " ", " ", " ", " ", "#", "#", " ", " ", "0", "#", " ", " ", " ", " ", "#", "#", " ", "#"],
-    ["#", " ", " ", "0", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#"],
-    ["#", " ", " ", " ", "#", " ", " ", " ", "#", "#", " ", " ", " ", "#", " ", " ", "#", " ", "#"],
-    ["#", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", "#"],
-    ["#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#"]
-];*/
+var map = [];
 
 function createMap(){
     var form = document.forms["map"];
@@ -28,14 +18,15 @@ function createMap(){
     height = form["height"].value;
     cell_size = form["cell-size"].value;
     delay = form["delay"].value;
-
-    creatures_count = form["creatures-count"].value;
+    herbivores_count = form["herbivores-count"].value;
+    predators_count = form["predators-count"].value;
     food_spawn_per_turn = form["food-spawn-per-turn"].value;
 
     form.setAttribute("hidden","true");
+    document.getElementById("explanation").removeAttribute("hidden");
 
     generateMap();
-    game = new Game(map, gameOutput, delay, food_spawn_per_turn, cell_size, creatures_count);
+    game = new Game(map, gameOutput, delay, food_spawn_per_turn, cell_size);
     game.start();   
 }
 
@@ -64,8 +55,11 @@ function generateMap(){
     for (var i = 0; i < wallsCount; i++)
         spawnRandom("#");
 
-    for (var i = 0; i < creatures_count; i++)
+    for (var i = 0; i < herbivores_count; i++)
         spawnRandom("0");
+
+    for (var i = 0; i < predators_count; i++)
+        spawnRandom("1");
 }
 
 function spawnRandom(symbol){

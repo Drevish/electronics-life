@@ -13,6 +13,11 @@ function Creature(coordinates) {
 	this.surroundsToVector = [[[-1, -1], [-1, 0], [-1, 1]],
 							  [[0, -1], [0, 0], [0, 1]],
 							  [[1, -1], [1, 0], [1, 1]]];
+
+	//overrided properties
+	this.food;
+	this.symbol;
+	this.color;
 }
 
 //creature vision
@@ -32,12 +37,15 @@ Creature.prototype.move = function() {
 		this.isDead = true;
 		return;
 	}
-	
+
 	this.energy--;
 
 	//reproduction (division on 2 cells)
-	if (this.energy >= 30)
+	if (this.energy >= 30) {
 		this.deliveredChild = true;
+		//creature doesn't move when delivers child
+		return;
+	}
 
 
 	//cells which are free to move into
@@ -52,7 +60,7 @@ Creature.prototype.move = function() {
 			}
 
 			//food found, instant eat
-			if (surround == "*") {
+			if (surround == this.food) {
 				foodCell = [i,j];
 			}
 

@@ -1,18 +1,18 @@
-function Game(gameMap, outputContext, delay, foodCountSpawnPerTurn, cellSize, creaturesCount) {
+function Game(gameMap, outputContext, delay, foodCountSpawnPerTurn, cellSize) {
     this.map = gameMap;				
     this.output = outputContext;
     this.delay = delay;
     this.creatures = [];
     this.foodCount = foodCountSpawnPerTurn;
     this.cellSize = cellSize;
-    this.creaturesCount = creaturesCount;
 
     this.map.forEach(function(row, i) {
 		row.forEach(function(symbol, j) {
-			if (symbol == "0") {
-				//finding creatures which are marked as "0" and pushing them to creatures array
-				this.creatures.push(new Creature(new Position(i, j)));
-			}
+			//finding creatures which are marked as "0" or "1" and pushing them to creatures array
+			if (symbol == "0")
+				this.creatures.push(new Herbivore(new Position(i, j)));
+			if (symbol == "1")
+				this.creatures.push(new Predator(new Position(i, j)));
 		}.bind(this));
 	}.bind(this));
 
@@ -26,14 +26,14 @@ Game.prototype.refreshMap = function() {
 	this.map.forEach(function(row, i) {
 		row.forEach(function(symbol, j) {
 			//deleting old creatures markers
-			if (symbol == "0")
+			if (symbol == "0" || symbol == "1")
 				this.map[i][j] = " ";
 		}.bind(this));
 	}.bind(this));
 
 	this.creatures.forEach(function(creature) {
 		//adding current creatures markers
-		this.map[creature.position.x][creature.position.y] = "0";
+		this.map[creature.position.x][creature.position.y] = creature.symbol;
 	}.bind(this));
 }
 
@@ -49,13 +49,6 @@ Game.prototype.print = function() {
 				context.fillRect(i * this.cellSize, j * this.cellSize, this.cellSize, this.cellSize);
 			}
 
-			if (symbol == "0") {
-				context.beginPath();
-				context.arc(i * this.cellSize + this.cellSize / 2, j * this.cellSize + this.cellSize / 2, this.cellSize / 2, 0,  Math.PI * 2);
-				context.fillStyle="#00FF00";
-				context.fill();
-			}
-
 			if (symbol == "*") {
 				context.beginPath();
 				context.arc(i * this.cellSize + this.cellSize / 2, j * this.cellSize + this.cellSize / 2, this.cellSize / 2, 0,  Math.PI * 2);
@@ -64,6 +57,13 @@ Game.prototype.print = function() {
 			}
 		}.bind(this));
 		this.output.innerHTML += "<br>";
+	}.bind(this));
+
+	this.creatures.forEach(function(creature){
+		context.beginPath();
+	 	context.arc(creature.position.x * this.cellSize + this.cellSize / 2, creature.position.y * this.cellSize + this.cellSize / 2, this.cellSize / 2, 0,  Math.PI * 2);
+		context.fillStyle = creature.color;
+		context.fill();
 	}.bind(this));
 }
 
@@ -111,11 +111,18 @@ Game.prototype.makeMove = function() {
 		if (creature.isDead) {
 			this.purgeCell(creature.position);
 			this.creatures = arrayDeleteElement(this.creatures, counter);
+			this.refreshMap();
 		}
-		if(creature.deliveredChild) {
+
+		if(creature.deliveredChild == true) {
 			creature.deliveredChild = false;
 			creature.energy -= 20;
-			this.creatures.push(new Creature(new Position(creature.position.x, creature.position.y)));
+			console.log(creature.energy, this.creatures.length)
+			if (creature instanceof Herbivore)
+				this.creatures.push(new Herbivore(new Position(creature.position.x, creature.position.y)));
+			if (creature instanceof Predator)
+				this.creatures.push(new Predator(new Position(creature.position.x, creature.position.y)));
+			this.refreshMap();
 		}
 	}.bind(this));
 

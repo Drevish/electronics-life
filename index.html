@@ -20,15 +20,23 @@
 			<input type="number" class="form-control" id="cell-size" min=10 max = 100 value=20>
 			<label for="delay">Turn delay in ms</label>
 			<input type="number" class="form-control" id="delay" min=50 max = 10000 value=100>
-			<label for="creatures-count">Creatures count</label>
-			<input type="number" class="form-control" id="creatures-count" min=1 max = 10 value=3>
+			<label for="herbivores-count">Herbivores count</label>
+			<input type="number" class="form-control" id="herbivores-count" min=1 max = 10 value=3>
+			<label for="predators-count">Predators count</label>
+			<input type="number" class="form-control" id="predators-count" min=0 max = 10 value=3>
 			<label for="food-spawn-per-turn">Food spawn per turn</label>
-			<input type="number" class="form-control" id="food-spawn-per-turn" min=0 max = 10 value=1>
+			<input type="number" class="form-control" id="food-spawn-per-turn" min=0 max = 10 value=2>
 		</fieldset>
 			
 		<button class="btn btn-primary" onclick="createMap(); return false;">Start simulation</button>
 	</form>
 
+	<div id="explanation" hidden>
+		<h3>Red colored rounds are predators</h3>
+		<h3>Green colored rounds are herbivores</h3>
+		<h3>Yellow colored rounds are plant food</h3>
+		<h3>Black squares are walls</h3>
+	</div>
 	<canvas></canvas>
 
 <script>
@@ -38,6 +46,7 @@
 </script>
 <script src="Position.js"></script>
 <script src="Creature.js"></script>
+<script src="Creatures.js"></script>
 <script src="Food.js"></script>
 <script src="Game.js"></script>
 <script src="script.js"></script>
