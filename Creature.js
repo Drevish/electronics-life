@@ -4,6 +4,8 @@ function Creature(coordinates) {
 	//creature need 1 energy to make move, and gets 10 when eats food
     this.isDead = false;
     this.deliveredChild = false;
+    this.emptyCell;
+	this.hasKilled = false;
 
 	//array of creature nearby cells
 	this.surrounds = [[" ", " ", " "],
@@ -30,8 +32,23 @@ Creature.prototype.scan = function(map) {
 	}.bind(this));
 }
 
+Creature.prototype.findEmptyCell = function(){
+	this.surrounds.forEach(function(row, i){
+		row.forEach(function(cell, j){
+			if (cell == " ") {
+				a = [i, j];
+				this.emptyCell = a;
+				return;
+			}
+		}.bind(this));
+	}.bind(this));
+}
+
 //move to a random empty space
 Creature.prototype.move = function() {
+	this.hasKilled = false;
+	this.emptyCell = undefined;
+
 	//death
 	if (this.energy == 0) {
 		this.isDead = true;
@@ -39,14 +56,6 @@ Creature.prototype.move = function() {
 	}
 
 	this.energy--;
-
-	//reproduction (division on 2 cells)
-	if (this.energy >= 30) {
-		this.deliveredChild = true;
-		//creature doesn't move when delivers child
-		return;
-	}
-
 
 	//cells which are free to move into
 	var emptySurrounds = [];
@@ -67,15 +76,27 @@ Creature.prototype.move = function() {
 		}.bind(this));
 	}.bind(this));
 
-	//deadlock, mo move
-	if (emptySurrounds.length == 0) return;
+	//reproduction (division on 2 cells)
+	if (this.energy >= 30) {
+		this.deliveredChild = true;
+		
+		//creature doesn't move when delivers child
+		if(emptySurrounds.length != 0) {
+			this.emptyCell = emptySurrounds[Math.floor(Math.random() * emptySurrounds.length)];
+			return;
+		}
+	}
 
 	if (foodCell) {
 		var newCell = foodCell;
 		this.energy += 10;
+		this.hasKilled = true;
 	}
-	else
+	else{
+		//deadlock, mo move
+		if (emptySurrounds.length == 0) return;
 		var newCell = emptySurrounds[Math.floor(Math.random() * emptySurrounds.length)];
+	}
 
 	var vector = this.surroundsToVector[newCell[0]][newCell[1]];	
 	this.position.x += vector[0];

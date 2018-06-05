@@ -76,9 +76,6 @@ Game.prototype.start = function() {
 	}.bind(this), this.delay);
 }
 
-Game.prototype.purgeCell = function(pos){
-	this.map[pos.x][pos.y] = " ";
-}
 
 Game.prototype.spawnFood = function() {
 	var emptyCells = [];
@@ -108,18 +105,34 @@ Game.prototype.makeMove = function() {
 		creature.move();
 
 		if (creature.isDead) {
-			this.purgeCell(creature.position);
 			this.map[creature.position.x][creature.position.y] = " ";
 			this.creatures = arrayDeleteElement(this.creatures, counter);
+			return;
+		}
+
+		if (creature.hasKilled && creature instanceof Predator) {
+			//searching and deleting dead creature;
+			this.creatures.forEach(function(killed, k) {
+				if (killed.position.compare(creature.position) && killed != creature)
+					this.creatures = arrayDeleteElement(this.creatures, k);
+			}.bind(this));
 		}
 
 		if(creature.deliveredChild == true) {
 			creature.deliveredChild = false;
 			creature.energy -= 20;
+
+			var a = creature.emptyCell;
+
+			//no empty space nearby
+			if (a == undefined) return;
+
+			a = creature.surroundsToVector[a[0]][a[1]]; 
+
 			if (creature instanceof Herbivore)
-				this.creatures.push(new Herbivore(new Position(creature.position.x, creature.position.y)));
+				this.creatures.push(new Herbivore(new Position(creature.position.x + a[0], creature.position.y + a[1])));
 			if (creature instanceof Predator)
-				this.creatures.push(new Predator(new Position(creature.position.x, creature.position.y)));
+				this.creatures.push(new Predator(new Position(creature.position.x + a[0], creature.position.y + a[1])));
 			
 		}
 	}.bind(this));

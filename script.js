@@ -50,8 +50,8 @@ function generateMap(){
         });
     });
     
-    //10% of walls
-    var wallsCount = Math.floor(width*height / 10);
+    //20% of walls
+    var wallsCount = Math.floor(width*height / 5);
     for (var i = 0; i < wallsCount; i++)
         spawnRandom("#");
 
