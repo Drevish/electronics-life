@@ -66,5 +66,4 @@ function spawnRandom(symbol){
     var newCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
     map[newCell[0]][newCell[1]] = symbol;
     emptyCells = arrayDeleteElement(emptyCells, newCell);
-    console.log(map);
 }

@@ -69,7 +69,6 @@ Game.prototype.print = function() {
 
 //starting game loop
 Game.prototype.start = function() {
-	console.log(this);
 	setInterval(function() {
 		this.makeMove();
 		this.refreshMap();
@@ -110,19 +109,18 @@ Game.prototype.makeMove = function() {
 
 		if (creature.isDead) {
 			this.purgeCell(creature.position);
+			this.map[creature.position.x][creature.position.y] = " ";
 			this.creatures = arrayDeleteElement(this.creatures, counter);
-			this.refreshMap();
 		}
 
 		if(creature.deliveredChild == true) {
 			creature.deliveredChild = false;
 			creature.energy -= 20;
-			console.log(creature.energy, this.creatures.length)
 			if (creature instanceof Herbivore)
 				this.creatures.push(new Herbivore(new Position(creature.position.x, creature.position.y)));
 			if (creature instanceof Predator)
 				this.creatures.push(new Predator(new Position(creature.position.x, creature.position.y)));
-			this.refreshMap();
+			
 		}
 	}.bind(this));
 
