@@ -9,6 +9,11 @@ body{
 
   button, label, fieldset{
     margin-top: 10px;
+    float: left;
+  }
+
+  canvas{
+    display: block;
   }
 
   #explanation{

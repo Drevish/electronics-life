@@ -23,7 +23,8 @@ function createMap(){
     food_spawn_per_turn = form["food-spawn-per-turn"].value;
 
     form.setAttribute("hidden","true");
-    document.getElementById("explanation").removeAttribute("hidden");
+    document.getElementById("explanation").removeAttribute("hidden")
+    document.getElementById("canvas").removeAttribute("hidden");
 
     generateMap();
     game = new Game(map, gameOutput, delay, food_spawn_per_turn, cell_size);

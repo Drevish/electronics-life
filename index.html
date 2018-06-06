@@ -28,7 +28,7 @@
 			<input type="number" class="form-control" id="food-spawn-per-turn" min=0 max = 10 value=10>
 		</fieldset>
 			
-		<button class="btn btn-primary" onclick="createMap(); return false;">Start simulation</button>
+		<button class="btn btn-primary btn-lg" onclick="createMap(); return false;">Start simulation</button>
 	</form>
 
 	<div id="explanation" hidden>
@@ -37,7 +37,12 @@
 		<h3>Yellow colored rounds are plant food</h3>
 		<h3>Black squares are walls</h3>
 	</div>
-	<canvas></canvas>
+	<div id="canvas" hidden>
+		<canvas></canvas>
+		<form>
+		<button class="btn btn-primary btn-lg" onclick="return true;">Restart</button>
+		</form>
+	</div>
 
 <script>
 	function arrayDeleteElement(array, index){

@@ -50,7 +50,7 @@ Creature.prototype.move = function() {
 	this.emptyCell = undefined;
 
 	//death
-	if (this.energy == 0) {
+	if (this.energy <= 0) {
 		this.isDead = true;
 		return;
 	}

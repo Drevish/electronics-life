@@ -47,6 +47,7 @@ Game.prototype.print = function() {
 			if (symbol == "#") {
 				context.fillStyle="#000000";
 				context.fillRect(i * this.cellSize, j * this.cellSize, this.cellSize, this.cellSize);
+				context.stroke();
 			}
 
 			if (symbol == "*") {
@@ -54,9 +55,9 @@ Game.prototype.print = function() {
 				context.arc(i * this.cellSize + this.cellSize / 2, j * this.cellSize + this.cellSize / 2, this.cellSize / 2, 0,  Math.PI * 2);
 				context.fillStyle="#FFFF2A";
 				context.fill();
+				context.stroke();
 			}
 		}.bind(this));
-		this.output.innerHTML += "<br>";
 	}.bind(this));
 
 	this.creatures.forEach(function(creature){
@@ -64,18 +65,9 @@ Game.prototype.print = function() {
 	 	context.arc(creature.position.x * this.cellSize + this.cellSize / 2, creature.position.y * this.cellSize + this.cellSize / 2, this.cellSize / 2, 0,  Math.PI * 2);
 		context.fillStyle = creature.color;
 		context.fill();
+		context.stroke();
 	}.bind(this));
 }
-
-//starting game loop
-Game.prototype.start = function() {
-	setInterval(function() {
-		this.makeMove();
-		this.refreshMap();
-		this.print();
-	}.bind(this), this.delay);
-}
-
 
 Game.prototype.spawnFood = function() {
 	var emptyCells = [];
@@ -101,20 +93,26 @@ Game.prototype.spawnFood = function() {
 Game.prototype.makeMove = function() {
 	this.creatures.forEach(function(creature, counter) {
 		//we have to give map to our creature in order to it could scan nearby cells
+		
 		creature.scan(this.map);
+		this.map[creature.position.x][creature.position.y] = " ";
 		creature.move();
+		this.map[creature.position.x][creature.position.y] = creature.symbol;
 
 		if (creature.isDead) {
 			this.map[creature.position.x][creature.position.y] = " ";
-			this.creatures = arrayDeleteElement(this.creatures, counter);
+			this.creatures.forEach(function(cr, i){
+				if (cr == creature)
+					this.creatures = this.creatures.slice(0, i).concat(this.creatures.slice(i + 1));
+			}.bind(this));
 			return;
 		}
 
 		if (creature.hasKilled && creature instanceof Predator) {
 			//searching and deleting dead creature;
 			this.creatures.forEach(function(killed, k) {
-				if (killed.position.compare(creature.position) && killed != creature)
-					this.creatures = arrayDeleteElement(this.creatures, k);
+					if (killed.position.compare(creature.position) && killed != creature)
+						this.creatures = this.creatures.slice(0, k).concat(this.creatures.slice(k + 1));
 			}.bind(this));
 		}
 
@@ -137,5 +135,19 @@ Game.prototype.makeMove = function() {
 		}
 	}.bind(this));
 
+	var sumEnergy = 0;
+	this.creatures.forEach(function(creature){
+		sumEnergy += creature.energy;
+	});
+
 	this.spawnFood();
+}
+
+//starting game loop
+Game.prototype.start = function() {
+	setInterval(function() {
+		this.makeMove();
+		this.refreshMap();
+		this.print();
+	}.bind(this), this.delay);
 }
